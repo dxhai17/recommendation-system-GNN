@@ -1,0 +1,9 @@
+# Tự động convert line endings về LF trên mọi OS
+* text=auto eol=lf
+
+# Binary files — không convert
+*.pt binary
+*.pkl binary
+*.mp3 binary
+*.wav binary
+*.png binary

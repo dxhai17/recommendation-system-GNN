@@ -1,0 +1,57 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file: .env
+    volumes:
+      - ./data:/app/data
+      - ./ai/checkpoints:/app/checkpoints
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file: .env
+    environment:
+      - WATCHPACK_POLLING=true   # fix hot-reload trên WSL2/Windows
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules        # tránh conflict node_modules host vs container
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  ai-pipeline:
+    build:
+      context: ./ai
+      dockerfile: Dockerfile
+    volumes:
+      - ./data:/app/data
+      - ./ai:/app
+    env_file: .env
+    profiles:
+      - pipeline   # chỉ chạy khi cần, không auto start
+    restart: "no"
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: moodmap_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  pgdata:

@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.pt          # model weights — nặng, không commit
+*.pkl
+.idea/
+
+# Data — KHÔNG bao giờ commit audio/data thô lên git
+data/raw/
+data/processed/
+data/labeled/*.csv
+data/graphs/*.pt
+
+# Environment
+.env
+.env.local
+
+# Node
+node_modules/
+.next/
+
+# OS
+.DS_Store
